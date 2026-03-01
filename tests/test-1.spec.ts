@@ -68,6 +68,7 @@ test('test', async ({ page }) => {
   await page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('combobox', { name: 'Log Level' }).click({ timeout: 90000 });
   await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().locator('#list-option-4')).toContainText('ALL');
   await page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('option', { name: 'ALL' }).click();
+  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByLabel('Translate Inbound', { exact: true }).locator('lm-columns-undistributed')).toContainText('ALL');
   await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('button', { name: 'Cancel' })).toBeVisible();
   await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('button', { name: 'Schedule' })).toBeVisible();
   await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('button', { name: 'Submit' })).toBeVisible();
