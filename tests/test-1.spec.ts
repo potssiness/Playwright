@@ -1,78 +1,80 @@
 import { test, expect } from '@playwright/test';
+import { Locators } from '../pages/locators';
 
 test('test', async ({ page }) => {
   test.setTimeout(120000);
   page.setDefaultTimeout(60000);
 
   await page.goto('https://mingle-cqa-portal.cqa.inforcloudsuite.com/v2/D830RC3_AX1');
-  await expect(page.getByRole('img', { name: 'Infor logo' })).toBeVisible();
+  
+  const frame = page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame();
+  const loc = new Locators(page, frame);
+
+  await expect(loc.loginLogo()).toBeVisible();
   await expect(page.locator('div').nth(1)).toBeVisible(); 
-  await page.locator('[data-test-id="login-username"]').click();
-  await page.locator('[data-test-id="login-username"]').press('ControlOrMeta+V');
-  await page.locator('[data-test-id="login-username"]').fill('500094');
-  await page.locator('[data-test-id="login-password"]').click();
-  await page.locator('[data-test-id="login-password"]').press('ControlOrMeta+V');
-  await page.locator('[data-test-id="login-password"]').fill('Qu@l!ty1$ah48!t_MT');
-  await page.locator('[data-test-id="login-signin-button"]').click();
+  await loc.loginUsername().click();
+  await loc.loginUsername().press('ControlOrMeta+V');
+  await loc.loginUsername().fill('500094');
+  await loc.loginPassword().click();
+  await loc.loginPassword().press('ControlOrMeta+V');
+  await loc.loginPassword().fill('Qu@l!ty1$ah48!t_MT');
+  await loc.loginSignInButton().click();
 
-  await expect(page.getByRole('link', { name: 'Home' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Financials & Supply Management' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Open navigation menu' })).toBeVisible();
+  await page.waitForLoadState('networkidle');
+  await expect(loc.homeLink()).toBeVisible();
+  await expect(loc.financialsLink()).toBeVisible();
+  await expect(loc.navigationMenuButton()).toBeVisible();
 
-  const emailButton = page.getByRole('button', { name: 'Your email has not been' });
-  if (await emailButton.isVisible()) {
-    await emailButton.click();
+  if (await loc.emailNotificationButton().isVisible()) {
+    await loc.emailNotificationButton().click();
   }
 
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().locator('#page-title')).toBeVisible({ timeout: 90000 });
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('button', { name: 'Toggle Navigation' })).toBeVisible();
-  await page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('button', { name: 'Toggle Navigation' }).click();
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('button', { name: 'Web' })).toBeVisible();
+  await page.waitForLoadState('networkidle');
+  await expect(loc.pageTitle()).toBeVisible({ timeout: 90000 });
+  await expect(loc.toggleNavigationButton()).toBeVisible();
+  await loc.toggleNavigationButton().click();
+  await expect(loc.webButton()).toBeVisible();
 
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('textbox', { name: 'Search' })).toBeVisible();
-  await page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('combobox', { name: 'Web' }).click();
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('option', { name: 'EDI' })).toBeVisible();
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().locator('#list-option-10')).toContainText('EDI');
-  await page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('option', { name: 'EDI' }).click();
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('combobox', { name: 'EDI' }).locator('span')).toBeVisible();
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('combobox')).toContainText('EDI');
+  await expect(loc.searchTextbox()).toBeVisible();
+  await loc.webCombobox().click();
+  await expect(loc.ediOption()).toBeVisible();
+  await expect(loc.ediListOption()).toContainText('EDI');
+  await loc.ediOption().click();
+  await expect(loc.ediComboboxSpan()).toBeVisible();
+  await expect(loc.combobox()).toContainText('EDI');
 
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('tab', { name: 'Dashboard' })).toBeVisible();
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('tab', { name: 'Data Exchange' })).toBeVisible();
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('tab', { name: 'EDI Work' })).toBeVisible();
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('tab', { name: 'Data Substitutions' })).toBeVisible();
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('tab', { name: 'Trading Partners' })).toBeVisible();
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('tab', { name: 'History' })).toBeVisible();
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByText('Key Processes')).toBeVisible();
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByText('Quick Links')).toBeVisible();
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().locator('#EDIAdministratorPageV3_Dashboard_2_Processing_widget_title').getByText('Processing')).toBeVisible();
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('link', { name: 'Supply Chain Interfaces' })).toBeVisible();
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('link', { name: 'Financial Interfaces' })).toBeVisible();
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('link', { name: 'Fact Sheets' })).toBeVisible();
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().locator('a').filter({ hasText: 'Translate Outbound Data' })).toBeVisible();
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().locator('a').filter({ hasText: 'Translate Inbound Data' })).toBeVisible();
-  await page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().locator('a').filter({ hasText: 'Translate Inbound Data' }).click();
+  await expect(loc.dashboardTab()).toBeVisible({ timeout: 30000 });
+  await expect(loc.dataExchangeTab()).toBeVisible();
+  await expect(loc.ediWorkTab()).toBeVisible();
+  await expect(loc.dataSubstitutionsTab()).toBeVisible();
+  await expect(loc.tradingPartnersTab()).toBeVisible();
+  await expect(loc.historyTab()).toBeVisible();
+  await expect(loc.keyProcessesText()).toBeVisible();
+  await expect(loc.quickLinksText()).toBeVisible();
+  await expect(loc.processingText()).toBeVisible();
+  await expect(loc.supplyChainLink()).toBeVisible();
+  await expect(loc.financialInterfacesLink()).toBeVisible();
+  await expect(loc.factSheetsLink()).toBeVisible();
+  await expect(loc.translateOutboundLink()).toBeVisible();
+  await expect(loc.translateInboundLink()).toBeVisible();
+  await loc.translateInboundLink().click();
 
-  // Trnslate Inbound Data page assertions
-  await page.waitForTimeout(5000);
-  
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByLabel('Translate Inbound', { exact: true }).locator('div').filter({ hasText: /^Translate Inbound$/ })).toBeVisible({ timeout: 90000 });
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByLabel('Translate Inbound', { exact: true }).locator('h1')).toContainText('Translate Inbound');
+  await page.waitForLoadState('networkidle');
+  await loc.translateInboundDiv().waitFor({ state: 'visible', timeout: 120000 });
+  await expect(loc.translateInboundDiv()).toBeVisible();
+  await expect(loc.translateInboundHeading()).toContainText('Translate Inbound');
 
-
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('heading', { name: 'Translate Inbound' })).toBeVisible({ timeout: 90000 });
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByText('CarrierPress down arrow to')).toBeVisible();
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByText('Process Type')).toBeVisible();
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByText('Log Level')).toBeVisible();
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().locator('span').filter({ hasText: 'INFO' })).toBeVisible();
-  await page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('combobox', { name: 'Log Level' }).click({ timeout: 90000 });
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().locator('#list-option-4')).toContainText('ALL');
-  await page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('option', { name: 'ALL' }).click();
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByLabel('Translate Inbound', { exact: true }).locator('lm-columns-undistributed')).toContainText('ALL');
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('button', { name: 'Cancel' })).toBeVisible();
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('button', { name: 'Schedule' })).toBeVisible();
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('button', { name: 'Submit' })).toBeVisible();
-  await page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('button', { name: 'Submit' }).click();
-  
-
+  await expect(loc.translateInboundH1()).toBeVisible();
+  await expect(loc.carrierText()).toBeVisible();
+  await expect(loc.processTypeText()).toBeVisible();
+  await expect(loc.logLevelText()).toBeVisible();
+  await expect(loc.infoSpan()).toBeVisible();
+  await loc.logLevelCombobox().click();
+  await expect(loc.allListOption()).toContainText('ALL');
+  await loc.allOption().click();
+  await expect(loc.columnsUndistributed()).toContainText('ALL');
+  await expect(loc.cancelButton()).toBeVisible();
+  await expect(loc.scheduleButton()).toBeVisible();
+  await expect(loc.submitButton()).toBeVisible();
+  await loc.submitButton().click();
 });
