@@ -20,7 +20,7 @@ export default defineConfig({
   /* Retry on CI only */
   retries: process.env.CI ? 4 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 10 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -29,7 +29,9 @@ export default defineConfig({
     // baseURL: 'http://localhost:3000',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    trace: 'retain-on-failure',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
     
     /* Increase timeout for slow-loading elements */
     actionTimeout: 30000, // 30 seconds for actions
@@ -40,22 +42,29 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { 
-        viewport: null,
+      use: {
+        viewport: { width: 1920, height: 1080 },
         launchOptions: {
-          args: ['--start-maximized']
+          args: ['--start-maximized', '--window-size=1920,1080']
         }
       },
     },
 
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      use: {
+        viewport: { width: 1920, height: 1080 },
+        launchOptions: {
+          args: ['--width=1920', '--height=1080']
+        }
+      },
     },
 
     {
       name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
+      use: {
+        viewport: { width: 1920, height: 1080 },
+      },
     },
 
     /* Test against mobile viewports. */
