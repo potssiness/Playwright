@@ -77,8 +77,29 @@ test('EDI login and inbound triggers', async ({ page }) => {
   await translateInboundPage.submitButton().click({ timeout: 60000 });
 
 
-  await page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().locator('a').filter({ hasText: 'Translate Outbound Data' }).click({ timeout: 60000 });
-  await expect(page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame().getByRole('heading', { name: 'Translate Outbound' })).toBeVisible({ timeout: 60000 });
+  const frame = page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame();
+  
+  await frame.locator('a').filter({ hasText: 'Translate Outbound Data' }).click({ timeout: 60000 });
+  await expect(frame.getByRole('heading', { name: 'Translate Outbound' })).toBeVisible({ timeout: 60000 });
+  
+  const translateOutboundLabel = frame.getByLabel('Translate Outbound', { exact: true });
+  await translateOutboundLabel.getByText('Data Source').click();
+  await expect(translateOutboundLabel.getByText('Data Source')).toBeVisible();
+  await expect(frame.getByText('Process Type')).toBeVisible();
+  await expect(frame.getByText('Delete Input Data')).toBeVisible();
+  await expect(frame.getByText('Treat Missing Data')).toBeVisible();
+  await expect(frame.getByText('Log Level')).toBeVisible();
+  await expect(frame.getByRole('heading', { name: 'Report Distribution' })).toBeVisible();
+  await expect(frame.getByRole('combobox', { name: 'Data Source' })).toBeVisible();
+  await expect(frame.getByRole('combobox', { name: 'Process Type' })).toBeVisible();
+  await expect(frame.getByRole('combobox', { name: 'Log Level' })).toBeVisible();
+  await expect(frame.getByRole('textbox', { name: 'Translate Outbound Report' })).toBeVisible();
+  await expect(frame.getByRole('combobox', { name: 'Report Export Type' })).toBeVisible();
+  
+  await frame.locator('span').filter({ hasText: 'INFO' }).click();
+  await frame.getByRole('option', { name: 'ALL' }).click();
+  await expect(frame.locator('span').filter({ hasText: 'ALL' })).toBeVisible();
+  await frame.getByRole('button', { name: 'Submit' }).click();
 
 
 });
