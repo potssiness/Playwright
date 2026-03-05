@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { LoginPage } from '../../src/ui/pages/LoginPage';
 import { DashboardPage } from '../../src/ui/pages/DashboardPage';
 import { TranslateInboundPage } from '../../src/ui/pages/TranslateInboundPage';
+import { TranslateOutboundPage } from '../../src/ui/pages/TranslateOutboundPage';
 import { config } from '../../src/config/env';
 
 test('EDI login and inbound triggers', async ({ page }) => {
@@ -11,6 +12,7 @@ test('EDI login and inbound triggers', async ({ page }) => {
   const loginPage = new LoginPage(page);
   const dashboardPage = new DashboardPage(page);
   const translateInboundPage = new TranslateInboundPage(page);
+  const translateOutboundPage = new TranslateOutboundPage(page);
 
   await page.goto(config.baseUrl);
   
@@ -76,30 +78,23 @@ test('EDI login and inbound triggers', async ({ page }) => {
   await expect(translateInboundPage.submitButton()).toBeVisible({ timeout: 60000 });
   await translateInboundPage.submitButton().click({ timeout: 60000 });
 
-
-  const frame = page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame();
+  await translateOutboundPage.translateOutboundLink().click({ timeout: 60000 });
+  await expect(translateOutboundPage.translateOutboundHeading()).toBeVisible({ timeout: 60000 });
   
-  await frame.locator('a').filter({ hasText: 'Translate Outbound Data' }).click({ timeout: 60000 });
-  await expect(frame.getByRole('heading', { name: 'Translate Outbound' })).toBeVisible({ timeout: 60000 });
+  await translateOutboundPage.dataSourceText().click();
+  await expect(translateOutboundPage.dataSourceText()).toBeVisible();
+  await expect(translateOutboundPage.processTypeText()).toBeVisible();
+  await expect(translateOutboundPage.deleteInputDataText()).toBeVisible();
+  await expect(translateOutboundPage.treatMissingDataText()).toBeVisible();
+  await expect(translateOutboundPage.logLevelText()).toBeVisible();
+  await expect(translateOutboundPage.reportDistributionHeading()).toBeVisible();
+  await expect(translateOutboundPage.dataSourceCombobox()).toBeVisible();
+  await expect(translateOutboundPage.processTypeCombobox()).toBeVisible();
+  await expect(translateOutboundPage.logLevelCombobox()).toBeVisible();
+  await expect(translateOutboundPage.translateOutboundReportTextbox()).toBeVisible();
+  await expect(translateOutboundPage.reportExportTypeCombobox()).toBeVisible();
   
-  const translateOutboundLabel = frame.getByLabel('Translate Outbound', { exact: true });
-  await translateOutboundLabel.getByText('Data Source').click();
-  await expect(translateOutboundLabel.getByText('Data Source')).toBeVisible();
-  await expect(frame.getByText('Process Type')).toBeVisible();
-  await expect(frame.getByText('Delete Input Data')).toBeVisible();
-  await expect(frame.getByText('Treat Missing Data')).toBeVisible();
-  await expect(frame.getByText('Log Level')).toBeVisible();
-  await expect(frame.getByRole('heading', { name: 'Report Distribution' })).toBeVisible();
-  await expect(frame.getByRole('combobox', { name: 'Data Source' })).toBeVisible();
-  await expect(frame.getByRole('combobox', { name: 'Process Type' })).toBeVisible();
-  await expect(frame.getByRole('combobox', { name: 'Log Level' })).toBeVisible();
-  await expect(frame.getByRole('textbox', { name: 'Translate Outbound Report' })).toBeVisible();
-  await expect(frame.getByRole('combobox', { name: 'Report Export Type' })).toBeVisible();
-  
-  await frame.locator('span').filter({ hasText: 'INFO' }).click();
-  await frame.getByRole('option', { name: 'ALL' }).click();
-  await expect(frame.locator('span').filter({ hasText: 'ALL' })).toBeVisible();
-  await frame.getByRole('button', { name: 'Submit' }).click();
-
-
+  await translateOutboundPage.selectLogLevel('ALL');
+  await expect(translateOutboundPage.allSpan()).toBeVisible();
+  await translateOutboundPage.submitButton().click();
 });
