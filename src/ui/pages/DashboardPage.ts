@@ -1,17 +1,38 @@
 import { Page, FrameLocator } from '@playwright/test';
+import { BasePage } from './BasePage';
 
-export class DashboardPage {
+/**
+ * Page object for the dashboard screen and frame contents.
+ */
+export class DashboardPage extends BasePage {
   private frame: FrameLocator;
 
-  constructor(private page: Page) {
+  constructor(page: Page) {
+    super(page);
     this.frame = page.locator('iframe[name="fsm_35_1eb46ae5-43be-49f0-b4bd-6c66f9cd9e5d"]').contentFrame();
   }
 
+  // Top-bar links and buttons outside the embedded dashboard frame
   homeLink = () => this.page.getByRole('link', { name: 'Home' });
   financialsLink = () => this.page.getByRole('link', { name: 'Financials & Supply Management' });
   navigationMenuButton = () => this.page.getByRole('button', { name: 'Open navigation menu' });
   emailNotificationButton = () => this.page.getByRole('button', { name: 'Your email has not been' });
 
+  /**
+   * Returns a healed locator for the email notification button.
+   *
+   * This gives the test a fallback path when the exact label or attributes change.
+   */
+  async emailNotificationButtonHealed() {
+    return this.healingLocator([
+      'button[aria-label="Your email has not been"]',
+      'button:has-text("Your email")',
+      'button[title*="email"]',
+      'button:has-text("Notification")',
+    ]);
+  }
+
+  // Frame content locators
   pageTitle = () => this.frame.locator('#page-title');
   toggleNavigationButton = () => this.frame.getByRole('button', { name: 'Toggle Navigation' });
   webButton = () => this.frame.getByRole('button', { name: 'Web' });
