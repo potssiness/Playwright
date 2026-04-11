@@ -38,8 +38,8 @@ export class DashboardPage extends BasePage {
   webButton = () => this.frame.getByRole('button', { name: 'Web' });
   searchTextbox = () => this.frame.getByRole('textbox', { name: 'Search' });
   webCombobox = () => this.frame.getByRole('combobox', { name: 'Web' });
-  ediOption = () => this.frame.getByRole('option', { name: 'EDI' });
-  ediListOption = () => this.frame.locator('#list-option-10');
+  ediOption = () => this.frame.getByRole('option', { name: 'EDI', exact: true });
+  ediListOption = () => this.frame.getByRole('option', { name: 'EDI', exact: true });
   ediCombobox = () => this.frame.getByRole('combobox', { name: 'EDI' });
   ediComboboxSpan = () => this.frame.getByRole('combobox', { name: 'EDI' }).locator('span');
   combobox = () => this.frame.getByRole('combobox');
@@ -59,4 +59,5 @@ export class DashboardPage extends BasePage {
   factSheetsLink = () => this.frame.getByRole('link', { name: 'Fact Sheets' });
   translateOutboundLink = () => this.frame.locator('a').filter({ hasText: 'Translate Outbound Data' });
   translateInboundLink = () => this.frame.locator('a').filter({ hasText: 'Translate Inbound Data' });
+  
 }
